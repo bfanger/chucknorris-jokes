@@ -1,14 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
+import useJokes from "#/services/use-jokes";
 
 export const Route = createFileRoute("/")({ component: Home });
 
 function Home() {
+  const jokes = useJokes();
   return (
-    <div className="p-8">
-      <h1 className="text-4xl font-bold">Welcome to TanStack Start</h1>
-      <p className="mt-4 text-lg">
-        Edit <code>src/routes/index.tsx</code> to get started.
-      </p>
+    <div>
+      <ul>
+        {jokes.data.map((joke) => (
+          <li key={joke.id} className="p-2">
+            {joke.value}
+          </li>
+        ))}
+        {jokes.loading && <li className="pt-2 animate-pulse">Loading...</li>}
+      </ul>
     </div>
   );
 }
