@@ -6,11 +6,12 @@
     "#/*": "./src/*"
   },
   "scripts": {
-    "dev": "vp dev --port 3000",
-    "generate-routes": "vp build",
+    "dev": "vp dev",
     "build": "vp build",
     "preview": "vp preview",
-    "prepare": "vp config"
+    "prepare": "vp config",
+    "lint": "vp check",
+    "format": "vp check --fix"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
@@ -36,7 +37,7 @@
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
-      "version": "12.18.0",
+      "version": ">=12.0.0",
       "onFail": "download"
     }
   }
