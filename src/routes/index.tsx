@@ -1,19 +1,46 @@
 import JokeCard from "#/components/joke-card";
 import { createFileRoute } from "@tanstack/react-router";
 import useJokes from "#/services/use-jokes";
+import { useState } from "react";
 
 export const Route = createFileRoute("/")({ component: Home });
 
 function Home() {
   const jokes = useJokes();
+  const [paused, setPaused] = useState(false);
 
   return (
-    <div className="my-10">
-      {jokes.data[0] && <div className="mx-auto mb-1 w-20" key={jokes.data[0].id}></div>}
+    <div className="mb-5">
+      <div className="relative mx-auto my-4 w-fit text-3xl text-slate-700">
+        <button
+          type="button"
+          onClick={() => setPaused((prev) => !prev)}
+          aria-pressed={paused}
+          className="block cursor-pointer hover:text-slate-900"
+          title={paused ? "Resume" : "Pause"}
+        >
+          {paused ? <PlayIcon /> : <PauseIcon />}
+        </button>
+        {paused && (
+          <button
+            type="button"
+            className="absolute top-0 left-10 cursor-pointer hover:text-slate-900"
+            title="Next joke"
+            onClick={() => jokes.rotateJoke()}
+          >
+            <NextIcon />
+          </button>
+        )}
+      </div>
       <ul>
         {jokes.data.map((joke, index) => (
           <li key={joke.id} className="mb-2">
-            <JokeCard joke={joke} active={index === 0} onTimeout={() => jokes.rotateJoke()} />
+            <JokeCard
+              joke={joke}
+              active={index === 0}
+              paused={paused}
+              onTimeout={() => jokes.rotateJoke()}
+            />
           </li>
         ))}
         {jokes.loading && <li className="animate-pulse pt-2 text-center font-bold">Loading...</li>}
@@ -22,5 +49,30 @@ function Home() {
         )}
       </ul>
     </div>
+  );
+}
+
+function PlayIcon() {
+  return (
+    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M8 5v14l11-7z" />
+    </svg>
+  );
+}
+
+function PauseIcon() {
+  return (
+    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M6 5h4v14H6zM14 5h4v14h-4z" />
+    </svg>
+  );
+}
+
+function NextIcon() {
+  return (
+    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M7 5v14l10-7z" />
+      <path d="M18 5h2v14h-2z" />
+    </svg>
   );
 }

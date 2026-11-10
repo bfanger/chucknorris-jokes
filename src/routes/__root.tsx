@@ -3,6 +3,7 @@ import Footer from "#/components/footer";
 import Header from "#/components/header";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
@@ -39,6 +40,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Header />
         <main className="px-3">{children}</main>
         <Footer />
+        <Toaster richColors position="top-center" />
         <TanStackDevtools
           config={{
             position: "bottom-right",

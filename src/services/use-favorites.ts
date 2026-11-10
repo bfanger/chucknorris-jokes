@@ -1,9 +1,11 @@
 import * as valibot from "valibot";
 import jokeSchema, { type Joke } from "./joke-schema";
 import { create } from "zustand";
+import { toast } from "sonner";
 import { useEffect } from "react";
 
 const schema = valibot.array(jokeSchema);
+const favoriteLimit = 10;
 
 interface State {
   ready: boolean;
@@ -11,9 +13,9 @@ interface State {
 }
 interface Actions {
   init: () => void;
-  toggle: (joke: Joke) => void;
+  toggle: (joke: Joke) => boolean;
 }
-const useFavoritesStore = create<State & Actions>((set) => {
+const useFavoritesStore = create<State & Actions>((set, get) => {
   const state: State = {
     jokes: [],
     ready: false,
@@ -31,17 +33,27 @@ const useFavoritesStore = create<State & Actions>((set) => {
           return { jokes: [], ready: true };
         }
       }),
-    toggle: (joke: Joke) =>
-      set((state) => {
-        if (!state.ready) {
-          throw new Error("Not ready");
-        }
-        const jokes = state.jokes.some((entry) => entry.id === joke.id)
-          ? state.jokes.filter((entry) => entry.id !== joke.id)
-          : [...state.jokes, joke];
-        localStorage.setItem("favorites", JSON.stringify(jokes));
-        return { jokes };
-      }),
+    toggle: (joke: Joke) => {
+      const state = get();
+      if (!state.ready) {
+        throw new Error("Not ready");
+      }
+      if (
+        !state.jokes.some((entry) => entry.id === joke.id) &&
+        state.jokes.length >= favoriteLimit
+      ) {
+        toast("Favorites limit reached", {
+          description: `Maxed out at ${favoriteLimit} Chuck Norris jokes. Adding more would melt your PC`,
+        });
+        return false;
+      }
+      const jokes = state.jokes.some((entry) => entry.id === joke.id)
+        ? state.jokes.filter((entry) => entry.id !== joke.id)
+        : [...state.jokes, joke];
+      localStorage.setItem("favorites", JSON.stringify(jokes));
+      set({ jokes });
+      return true;
+    },
   };
   return { ...state, ...actions };
 });

@@ -1,4 +1,4 @@
-import { type Joke } from "./joke-schema";
+import type { Joke } from "./joke-schema";
 import { useCallback } from "react";
 import useFavorites from "./use-favorites";
 
