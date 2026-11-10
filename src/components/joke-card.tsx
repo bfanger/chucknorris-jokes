@@ -20,7 +20,7 @@ export default function JokeCard({ joke, active = false, paused = false, onTimeo
         {active && onTimeout && !paused && <Timer duration={5} onTimeout={onTimeout} />}
       </div>
       <div
-        className={`relative py-2.5 pr-12 pl-4 leading-tight font-bold text-gray-900 ${active ? "text-2xl" : "text-sm"}`}
+        className={`relative py-2.5 pr-9 pl-4 leading-tight font-bold wrap-break-word text-gray-900 ${active ? "text-2xl" : "text-sm"}`}
       >
         {decode(joke.value)}
       </div>

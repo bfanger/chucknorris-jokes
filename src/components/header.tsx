@@ -8,20 +8,16 @@ export default function Header() {
       <h1 className="font-peralta basis-1/3 text-2xl font-bold tracking-wider max-lg:text-center max-sm:text-xl">
         <Link to="/">Chuck Norris jokes</Link>
       </h1>
-      <nav className="flex grow justify-center gap-6">
+      <nav className="flex grow items-center justify-center gap-6">
         <Link
           to="/"
           activeOptions={{ exact: true }}
-          className="cursor-pointer border-b-2 border-transparent"
-          activeProps={{ className: "cursor-pointer border-b-2 border-transparent font-bold" }}
+          className="cursor-pointer"
+          activeProps={{ className: "font-bold" }}
         >
           Jokes
         </Link>
-        <Link
-          to="/favorites"
-          className="cursor-pointer border-b-2 border-transparent"
-          activeProps={{ className: "cursor-pointer border-b-2 border-transparent font-bold" }}
-        >
+        <Link to="/favorites" className="cursor-pointer" activeProps={{ className: "font-bold" }}>
           Favorites
           {favorites.ready && Boolean(favorites.jokes.length) && ` (${favorites.jokes.length})`}
         </Link>
