@@ -17,14 +17,9 @@ const inDocker = existsSync("/.dockerenv"),
       ignorePatterns: ["src/routeTree.gen.ts"],
       jsPlugins: [{ name: "vite-plus", specifier: "vite-plus/oxlint-plugin" }],
       options: { typeAware: true, typeCheck: true },
-      overrides: [
-        {
-          files: ["**/__tests__/**"],
-          rules: { "no-magic-numbers": "off" },
-        },
-      ],
       rules: {
         "func-style": "off",
+        "no-magic-numbers": "off",
         "no-ternary": "off",
         "one-var": "off",
         "vite-plus/prefer-vite-plus-imports": "error",

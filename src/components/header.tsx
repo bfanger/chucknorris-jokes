@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useFavorites } from "#/services/use-favorites";
+import useFavorites from "#/services/use-favorites";
 
 export default function Header() {
   const favorites = useFavorites();

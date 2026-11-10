@@ -6,7 +6,7 @@ interface Props {
 export default function FavoriteStar({ ready, checked, onToggle }: Props) {
   return (
     <button
-      className="group absolute top-0 right-0 cursor-pointer px-2.5 py-2 transition-opacity duration-500 disabled:scale-50 disabled:opacity-10"
+      className="group cursor-pointer px-2.5 py-2 transition-opacity duration-500 disabled:scale-50 disabled:opacity-10"
       type="button"
       role="switch"
       disabled={!ready}
