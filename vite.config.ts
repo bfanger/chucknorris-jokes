@@ -38,6 +38,9 @@ const inDocker = existsSync("/.dockerenv"),
     staged: {
       "*": "vp check --fix",
     },
+    test: {
+      exclude: ["playwright/**", "node_modules/**"],
+    },
   });
 
 export default config;

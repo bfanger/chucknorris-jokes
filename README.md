@@ -1,6 +1,6 @@
 # Chuck Norris jokes
 
-A site for saving you favorite Chuck Norris jokes.
+A site for saving your favorite Chuck Norris jokes.
 For details about the assignment see [assignment.md](./docs/assignment.md)
 
 ## Links
