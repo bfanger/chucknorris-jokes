@@ -10,6 +10,7 @@ const inDocker = existsSync("/.dockerenv"),
   config = defineConfig({
     fmt: {
       ignorePatterns: ["src/routeTree.gen.ts"],
+      sortTailwindcss: { config: "src/styles.css" },
     },
     lint: {
       categories: { style: "warn" },
@@ -25,6 +26,7 @@ const inDocker = existsSync("/.dockerenv"),
       rules: {
         "func-style": "off",
         "no-ternary": "off",
+        "one-var": "off",
         "vite-plus/prefer-vite-plus-imports": "error",
       },
     },

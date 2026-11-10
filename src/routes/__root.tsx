@@ -3,6 +3,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
 import appCss from "../styles.css?url";
+import Footer from "#/components/footer";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -34,8 +35,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body>
-        {children}
+      <body className="flex min-h-screen flex-col bg-slate-300">
+        <header className="bg-slate-800 p-3 text-slate-200">
+          <h1 className="font-peralta text-center text-3xl font-bold tracking-wider">
+            Chuck Norris jokes
+          </h1>
+        </header>
+        <main>{children}</main>
+        <Footer />
         <TanStackDevtools
           config={{
             position: "bottom-right",
