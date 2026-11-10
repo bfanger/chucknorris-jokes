@@ -13,7 +13,7 @@ interface Props {
 export default function JokeCard({ joke, active = false, paused = false, onTimeout }: Props) {
   const { ready, favorite, toggleFavorite } = useFavorite(joke);
   return (
-    <div className="relative mx-auto min-h-16 w-full max-w-[60ch]">
+    <div className="relative mx-auto min-h-16 w-full max-w-[60ch]" data-testid={`joke-${joke.id}`}>
       <div className="absolute top-0 -right-3 h-full w-3 bg-white sm:[clip-path:polygon(100%_0,0_0,0_100%)]" />
       <div className="absolute top-0 -left-3 h-full w-3 bg-white sm:[clip-path:polygon(100%_0,0_100%,100%_100%)]" />
       <div className="absolute inset-0 bg-white">
