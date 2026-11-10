@@ -1,4 +1,4 @@
-export interface Joke {
+export interface ApiJoke {
   categories: string[];
   created_at: string;
   icon_url: string;
@@ -12,5 +12,5 @@ export default async function fetchRandomJoke() {
   if (!response.ok) {
     throw new Error(`API server responded with an error (HTTP${response.status})`);
   }
-  return (await response.json()) as Joke;
+  return (await response.json()) as ApiJoke;
 }
