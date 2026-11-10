@@ -23,7 +23,12 @@ export const Route = createRootRoute({
         name: "viewport",
       },
       {
-        title: "TanStack Start Starter",
+        content:
+          "A collection of random Chuck Norris jokes. Refresh every 5 seconds, and save your favorites.",
+        name: "description",
+      },
+      {
+        title: "Chuck Norris jokes",
       },
     ],
   }),

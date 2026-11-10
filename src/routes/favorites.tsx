@@ -1,11 +1,18 @@
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { Link, createFileRoute } from "@tanstack/react-router";
-import Loading from "#/components/loading";
 import JokeCard from "#/components/joke-card";
+import Loading from "#/components/loading";
 import useFavorites from "#/services/use-favorites";
 
 export const Route = createFileRoute("/favorites")({
   component: RouteComponent,
+  head: () => ({
+    meta: [
+      {
+        title: "Favorites",
+      },
+    ],
+  }),
 });
 
 function RouteComponent() {
