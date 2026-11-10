@@ -38,6 +38,13 @@ const useJokesStore = create<State & Actions>((set, get) => {
     },
     rotateJoke: () =>
       fetchRandomJoke().then((joke) => {
+        if (get().data.some((entry) => entry.id === joke.id)) {
+          return new Promise((resolve) =>
+            setTimeout(() => {
+              void actions.rotateJoke().then(resolve);
+            }, 3000),
+          );
+        }
         set((state) => {
           const from = state.data.length < jokeLimit ? 0 : 1;
           return { data: [...state.data.slice(from), valibot.parse(jokeSchema, joke)] };
@@ -55,3 +62,5 @@ export default function useJokes() {
   useEffect(() => init(), [init]);
   return store;
 }
+
+export const _testing = { useJokesStore };
