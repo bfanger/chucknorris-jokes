@@ -1,6 +1,6 @@
-import { JokeCard } from "#/components/joke-card";
+import JokeCard from "#/components/joke-card";
 import { createFileRoute } from "@tanstack/react-router";
-import { useFavorites } from "#/services/use-favorites";
+import useFavorites from "#/services/use-favorites";
 
 export const Route = createFileRoute("/favorites")({
   component: RouteComponent,

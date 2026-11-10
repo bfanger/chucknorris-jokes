@@ -1,31 +1,57 @@
 import * as valibot from "valibot";
-import { type Joke, jokeSchema } from "./joke-schema";
-import { useEffect, useState } from "react";
+import jokeSchema, { type Joke } from "./joke-schema";
+import { create } from "zustand";
 import fetchRandomJoke from "./fetch-random-joke";
+import { useEffect } from "react";
+
+const jokeLimit = 10;
+
+interface State {
+  data: Joke[];
+  failed: boolean;
+  loading: boolean;
+}
+interface Actions {
+  init: () => void;
+  rotateJoke: () => Promise<void>;
+}
+const useJokesStore = create<State & Actions>((set, get) => {
+  const state: State = {
+    data: [],
+    failed: false,
+    loading: false,
+  };
+  const actions: Actions = {
+    init: () => {
+      if (get().loading || get().data.length > 0) {
+        return;
+      }
+      set({ loading: true });
+      Promise.all(Array.from({ length: jokeLimit }).map(() => actions.rotateJoke()))
+        .catch((error) => {
+          console.warn(error);
+          set({ failed: true });
+        })
+        .finally(() => {
+          set({ loading: false });
+        });
+    },
+    rotateJoke: () =>
+      fetchRandomJoke().then((joke) => {
+        set((state) => {
+          const from = state.data.length < jokeLimit ? 0 : 1;
+          return { data: [...state.data.slice(from), valibot.parse(jokeSchema, joke)] };
+        });
+      }),
+  };
+  return { ...state, ...actions };
+});
 
 /**
- * Load 10 jokes in parallel, populate the jokes array as they arrive
+ * UseJokes fetches a batch of random jokes after initial render to prevent hydration issues
  */
-export default function useJokes(limit: number) {
-  const [loading, setLoading] = useState(true);
-  const [failed, setFailed] = useState(false);
-  const [data, setData] = useState([] as Joke[]);
-
-  useEffect(() => {
-    Promise.all(
-      Array.from({ length: limit }).map(() =>
-        fetchRandomJoke().then((joke) => {
-          setData((current) => [...current, valibot.parse(jokeSchema, joke)]);
-        }),
-      ),
-    )
-      .catch((error) => {
-        console.warn(error);
-        setFailed(true);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-  return { data, failed, loading };
+export default function useJokes() {
+  const { init, ...store } = useJokesStore();
+  useEffect(() => init(), [init]);
+  return store;
 }
