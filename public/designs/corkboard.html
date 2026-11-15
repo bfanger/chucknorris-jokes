@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chuck Norris jokes — Design E “Corkboard”</title>
+    <meta
+      name="description"
+      content="Playful design alternative: jokes pinned as taped posters on a corkboard. Standalone HTML + CSS, no JavaScript."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rye&family=Special+Elite&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ------------------------------------------------------------------ *
+       * CORKBOARD — design E
+       * Direction: a sheriff's corkboard. Ten jokes are taped posters on cork,
+       * newest one big and swinging, typewriter type, wax-seal star for
+       * favorites, torn edges and push pins. Pure HTML + CSS.
+       * ------------------------------------------------------------------ */
+      :root {
+        --cork: #b0875b;
+        --cork-dark: #8d6743;
+        --paper: #f4e9d2;
+        --paper-2: #e7d9bd;
+        --ink: #2b241c;
+        --ink-2: #5c5142;
+        --red: #a4472f;
+        --mustard: #c98f2c;
+        --display: "Rye", "Impact", serif;
+        --type: "Special Elite", "Courier New", monospace;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: var(--type);
+        line-height: 1.55;
+        background: var(--cork);
+      }
+
+      /* cork speckle: two offset dot layers */
+      .board {
+        position: relative;
+        min-height: 100vh;
+        padding: 1.5rem 1.25rem 2.5rem;
+        background-image:
+          radial-gradient(circle at 25% 35%, rgba(70, 45, 25, 0.35) 0 1.6px, transparent 2.4px),
+          radial-gradient(circle at 75% 65%, rgba(70, 45, 25, 0.28) 0 1.6px, transparent 2.4px),
+          radial-gradient(circle at 50% 50%, rgba(255, 226, 190, 0.18) 0 1.2px, transparent 2px);
+        background-size:
+          16px 16px,
+          22px 22px,
+          11px 11px;
+        background-position:
+          0 0,
+          7px 9px,
+          3px 5px;
+      }
+
+      /* vignette so the board reads as physical */
+      .board::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(
+          120% 90% at 50% 35%,
+          transparent 40%,
+          rgba(60, 38, 20, 0.55) 100%
+        );
+      }
+
+      .frame {
+        max-width: 60rem;
+        margin: 0 auto;
+        position: relative;
+      }
+
+      /* ---------------- pinned header ---------------- */
+      .mast {
+        position: relative;
+        background: var(--paper);
+        padding: 1.1rem 1.3rem 1rem;
+        border-left: 6px solid var(--red);
+        box-shadow: 0 8px 18px rgba(45, 28, 14, 0.45);
+        transform: rotate(-1.1deg);
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      /* a strip of tape holding the masthead */
+      .mast::before {
+        content: "";
+        position: absolute;
+        top: -0.7rem;
+        left: 50%;
+        width: 7rem;
+        height: 1.5rem;
+        transform: translateX(-50%) rotate(-3deg);
+        background: rgba(255, 246, 222, 0.6);
+        border-left: 1px dashed rgba(140, 110, 78, 0.5);
+        border-right: 1px dashed rgba(140, 110, 78, 0.5);
+        box-shadow: 0 2px 5px rgba(45, 28, 14, 0.3);
+      }
+
+      .mast h1 {
+        margin: 0;
+        font-family: var(--display);
+        font-size: clamp(1.5rem, 4.6vw, 2.6rem);
+        line-height: 1.05;
+        letter-spacing: 0.01em;
+        color: var(--ink);
+        text-shadow: 2px 2px 0 rgba(201, 143, 44, 0.55);
+      }
+
+      .nav {
+        display: flex;
+        gap: 0.75rem;
+        font-size: 0.85rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .nav span {
+        color: var(--ink-2);
+        padding: 0.35rem 0.6rem;
+        border-bottom: 2px solid transparent;
+      }
+
+      .nav .is-active {
+        color: var(--red);
+        border-bottom-color: var(--red);
+      }
+      /* ---------------- pause pin ---------------- */
+      .pause {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.6rem;
+        height: 2.6rem;
+        margin: 1.4rem auto 1.6rem;
+        border: 2px solid var(--ink);
+        border-radius: 50%;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--type);
+        font-size: 0.85rem;
+        cursor: pointer;
+        box-shadow:
+          0 5px 12px rgba(45, 28, 14, 0.45),
+          inset 0 0 0 3px rgba(164, 71, 47, 0.25);
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+
+      .pause:hover {
+        transform: scale(1.08) rotate(-4deg);
+      }
+
+      .pause:focus-visible {
+        outline: 3px solid var(--red);
+        outline-offset: 3px;
+      }
+
+      /* ---------------- posters ---------------- */
+      .posters {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.6rem 1.4rem;
+      }
+
+      .poster {
+        position: relative;
+        background: var(--paper);
+        padding: 1.1rem 3.4rem 1.4rem 1.2rem;
+        box-shadow: 0 7px 16px rgba(45, 28, 14, 0.4);
+        transition:
+          transform 0.25s,
+          box-shadow 0.25s;
+      }
+
+      /* crooked pinning */
+      .poster:nth-child(2n) {
+        transform: rotate(1.4deg);
+      }
+      .poster:nth-child(3n) {
+        transform: rotate(-1.8deg);
+      }
+      .poster:nth-child(4n) {
+        transform: rotate(0.7deg);
+      }
+      .poster:nth-child(5n) {
+        transform: rotate(-0.9deg);
+      }
+
+      .poster:hover {
+        transform: translateY(-4px) rotate(0deg);
+        box-shadow: 0 12px 24px rgba(45, 28, 14, 0.55);
+      }
+
+      /* tape strips, alternating corners */
+      .poster::before {
+        content: "";
+        position: absolute;
+        width: 4.5rem;
+        height: 1.2rem;
+        background: rgba(255, 246, 222, 0.55);
+        box-shadow: 0 2px 4px rgba(45, 28, 14, 0.3);
+      }
+
+      .poster::before {
+        top: -0.55rem;
+        left: -0.5rem;
+        transform: rotate(-24deg);
+      }
+
+      .poster:nth-child(2n)::before {
+        left: auto;
+        right: -0.5rem;
+        transform: rotate(22deg);
+      }
+
+      /* torn bottom edge */
+      .poster .joke {
+        margin: 0;
+        font-size: 1rem;
+        color: var(--ink);
+        overflow-wrap: break-word;
+      }
+
+      .poster .tear {
+        display: block;
+        margin-top: 0.9rem;
+        height: 6px;
+        background: var(--paper-2);
+        clip-path: polygon(
+          0 0,
+          6% 60%,
+          12% 0,
+          18% 60%,
+          25% 0,
+          31% 60%,
+          38% 0,
+          44% 60%,
+          51% 0,
+          57% 60%,
+          64% 0,
+          70% 60%,
+          77% 0,
+          83% 60%,
+          90% 0,
+          96% 60%,
+          100% 0
+        );
+      }
+
+      /* ---------------- the newest poster ---------------- */
+      .poster.is-new {
+        grid-column: 1 / -1;
+        background: var(--paper-2);
+        border: 3px double var(--ink);
+        padding: 1.5rem 3.8rem 1.9rem 1.6rem;
+        transform: rotate(-1.6deg);
+        box-shadow: 0 12px 26px rgba(45, 28, 14, 0.55);
+        animation: swing 6s ease-in-out infinite;
+      }
+
+      @keyframes swing {
+        0%,
+        100% {
+          transform: rotate(-1.6deg);
+        }
+        50% {
+          transform: rotate(1.1deg);
+        }
+      }
+
+      .poster.is-new .joke {
+        font-family: var(--display);
+        font-size: clamp(1.4rem, 4vw, 2.2rem);
+        line-height: 1.2;
+      }
+
+      /* countdown: the sheriff rides in 5s */
+      .fuse {
+        position: absolute;
+        left: 1.6rem;
+        right: 3.8rem;
+        bottom: 0.6rem;
+        height: 4px;
+        background: rgba(43, 36, 28, 0.18);
+      }
+
+      .fuse-bar {
+        display: block;
+        height: 100%;
+        background: var(--red);
+        transform-origin: left;
+        animation: ride 5s linear infinite;
+      }
+
+      @keyframes ride {
+        from {
+          transform: scaleX(1);
+        }
+        to {
+          transform: scaleX(0);
+        }
+      }
+
+      /* ---------------- wax seal ---------------- */
+      .seal {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.4rem;
+        height: 2.4rem;
+        border: 0;
+        border-radius: 50%;
+        background: none;
+        cursor: pointer;
+      }
+
+      .seal:focus-visible {
+        outline: 3px solid var(--red);
+        outline-offset: 3px;
+      }
+
+      .star {
+        width: 22px;
+        height: 22px;
+        fill: none;
+        stroke: var(--ink-2);
+        stroke-width: 1.6;
+        transition:
+          transform 0.2s,
+          stroke 0.2s,
+          filter 0.2s;
+      }
+
+      .seal:hover .star {
+        stroke: var(--red);
+        transform: scale(1.12) rotate(-6deg);
+      }
+
+      .poster.is-wax .seal {
+        background: radial-gradient(circle at 35% 30%, #c4553a, var(--red) 60%, #7c3220);
+        box-shadow:
+          0 3px 8px rgba(45, 28, 14, 0.5),
+          inset 0 0 0 3px rgba(255, 236, 214, 0.25);
+      }
+
+      .poster.is-wax .star {
+        fill: var(--paper);
+        stroke: var(--paper);
+        transform: rotate(-8deg) scale(1.1);
+      }
+
+      /* ---------------- pinned footer ---------------- */
+      .foot {
+        margin-top: 2.2rem;
+        padding: 0.9rem 1.1rem;
+        background: var(--paper-2);
+        border-top: 3px solid var(--ink);
+        box-shadow: 0 6px 14px rgba(45, 28, 14, 0.4);
+        transform: rotate(0.6deg);
+        font-size: 0.85rem;
+        color: var(--ink-2);
+        text-align: center;
+      }
+
+      .foot a {
+        color: var(--red);
+        text-decoration: none;
+        border-bottom: 1px dashed rgba(164, 71, 47, 0.5);
+      }
+
+      .foot a:hover {
+        color: var(--ink);
+        border-bottom-style: solid;
+      }
+
+      /* ---------------- responsive ---------------- */
+      @media (max-width: 700px) {
+        .mast {
+          grid-template-columns: 1fr;
+          justify-items: start;
+        }
+        .posters {
+          grid-template-columns: 1fr;
+          gap: 1.4rem;
+        }
+        .seal {
+          width: 2.1rem;
+          height: 2.1rem;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .poster.is-new {
+          animation: none;
+          transform: rotate(-1.6deg);
+        }
+        .fuse-bar {
+          animation: none;
+          transform: scaleX(0.35);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Design mockup: all styling inline, no JavaScript. Nav items are illustrative. -->
+    <div class="board">
+      <svg width="0" height="0" aria-hidden="true" style="position: absolute">
+        <symbol id="star" viewBox="0 0 24 24">
+          <path
+            d="M11.245 4.174C11.4765 3.50808 11.5922 3.17513 11.7634 3.08285C11.9115 3.00298 12.0898 3.00298 12.238 3.08285C12.4091 3.17513 12.5248 3.50808 12.7563 4.174L14.2866 8.57639C14.3525 8.76592 14.3854 8.86068 14.4448 8.93125C14.4972 8.99359 14.5641 9.04218 14.6396 9.07278C14.725 9.10743 14.8253 9.10947 15.0259 9.11356L19.6857 9.20852C20.3906 9.22288 20.743 9.23007 20.8837 9.36432C21.0054 9.48051 21.0605 9.65014 21.0303 9.81569C20.9955 10.007 20.7146 10.2199 20.1528 10.6459L16.4387 13.4616C16.2788 13.5829 16.1989 13.6435 16.1501 13.7217C16.107 13.7909 16.0815 13.8695 16.0757 13.9507C16.0692 14.0427 16.0982 14.1387 16.1563 14.3308L17.506 18.7919C17.7101 19.4667 17.8122 19.8041 17.728 19.9793C17.6551 20.131 17.5108 20.2358 17.344 20.2583C17.1513 20.2842 16.862 20.0829 16.2833 19.6802L12.4576 17.0181C12.2929 16.9035 12.2106 16.8462 12.1211 16.8239C12.042 16.8043 11.9593 16.8043 11.8803 16.8239C11.7908 16.8462 11.7084 16.9035 11.5437 17.0181L7.71805 19.6802C7.13937 20.0829 6.85003 20.2842 6.65733 20.2583C6.49056 20.2358 6.34626 20.131 6.27337 19.9793C6.18915 19.8041 6.29123 19.4667 6.49538 18.7919L7.84503 14.3308C7.90313 14.1387 7.93218 14.0427 7.92564 13.9507C7.91986 13.8695 7.89432 13.7909 7.85123 13.7217C7.80246 13.6435 7.72251 13.5829 7.56262 13.4616L3.84858 10.6459C3.28678 10.2199 3.00588 10.007 2.97101 9.81569C2.94082 9.65014 2.99594 9.48051 3.11767 9.36432C3.25831 9.23007 3.61074 9.22289 4.31559 9.20852L8.9754 9.11356C9.176 9.10947 9.27631 9.10743 9.36177 9.07278C9.43726 9.04218 9.50414 8.99359 9.55657 8.93125C9.61593 8.86068 9.64887 8.76592 9.71475 8.57639L11.245 4.174Z"
+          />
+        </symbol>
+      </svg>
+
+      <div class="frame">
+        <header class="mast">
+          <h1>Chuck Norris jokes</h1>
+          <nav class="nav"><span class="is-active">Jokes</span><span>Favorites</span></nav>
+        </header>
+
+        <button class="pause" type="button" title="Pause">&#10074;&#10074;</button>
+
+        <ol class="posters">
+          <li class="poster is-new">
+            <p class="joke">Aliens won&rsquo;t invade until Chuck Norris dies.</p>
+            <span class="tear" aria-hidden="true"></span>
+            <span class="fuse" aria-hidden="true"><span class="fuse-bar"></span></span>
+            <button
+              class="seal"
+              type="button"
+              role="switch"
+              aria-checked="false"
+              title="Mark as favorite"
+            >
+              <svg class="star" viewBox="0 0 24 24" aria-hidden="true">
+                <use href="#star"></use>
+              </svg>
+            </button>
+          </li>
+          <li class="poster is-wax">
+            <p class="joke">
+              Which came first the chicken or the egg? Doesn&rsquo;t matter Chuck Norris is here.
+            </p>
+            <span class="tear" aria-hidden="true"></span>
+            <button
+              class="seal"
+              type="button"
+              role="switch"
+              aria-checked="true"
+              title="Remove from favorites"
+            >
+              <svg class="star" viewBox="0 0 24 24" aria-hidden="true">
+                <use href="#star"></use>
+              </svg>
+            </button>
+          </li>
+          <li class="poster">
+            <p class="joke">
+              Simply by pulling on both ends, Chuck Norris can stretch diamonds back into coal.
+            </p>
+            <span class="tear" aria-hidden="true"></span>
+            <button
+              class="seal"
+              type="button"
+              role="switch"
+              aria-checked="false"
+              title="Mark as favorite"
+            >
+              <svg class="star" viewBox="0 0 24 24" aria-hidden="true">
+                <use href="#star"></use>
+              </svg>
+            </button>
+          </li>
+          <li class="poster">
+            <p class="joke">Chuck Norris uses a set of baggies as a vaginal douche.</p>
+            <span class="tear" aria-hidden="true"></span>
+            <button
+              class="seal"
+              type="button"
+              role="switch"
+              aria-checked="false"
+              title="Mark as favorite"
+            >
+              <svg class="star" viewBox="0 0 24 24" aria-hidden="true">
+                <use href="#star"></use>
+              </svg>
+            </button>
+          </li>
+          <li class="poster is-wax">
+            <p class="joke">
+              Chuck Norris can win a game of Trivial Pursuit with one roll of the dice, and without
+              answering a single question&hellip; just a nod of the head, and a stroke of the beard.
+            </p>
+            <span class="tear" aria-hidden="true"></span>
+            <button
+              class="seal"
+              type="button"
+              role="switch"
+              aria-checked="true"
+              title="Remove from favorites"
+            >
+              <svg class="star" viewBox="0 0 24 24" aria-hidden="true">
+                <use href="#star"></use>
+              </svg>
+            </button>
+          </li>
+          <li class="poster">
+            <p class="joke">
+              Chuck Norris is a PhD in Pain. However, his advances in the field of Pleasure have
+              earned him a Nobel Prize.
+            </p>
+            <span class="tear" aria-hidden="true"></span>
+            <button
+              class="seal"
+              type="button"
+              role="switch"
+              aria-checked="false"
+              title="Mark as favorite"
+            >
+              <svg class="star" viewBox="0 0 24 24" aria-hidden="true">
+                <use href="#star"></use>
+              </svg>
+            </button>
+          </li>
+          <li class="poster">
+            <p class="joke">
+              Chuck Norris once roasted an entire moose on the manifold of his Hummer.
+            </p>
+            <span class="tear" aria-hidden="true"></span>
+            <button
+              class="seal"
+              type="button"
+              role="switch"
+              aria-checked="false"
+              title="Mark as favorite"
+            >
+              <svg class="star" viewBox="0 0 24 24" aria-hidden="true">
+                <use href="#star"></use>
+              </svg>
+            </button>
+          </li>
+          <li class="poster">
+            <p class="joke">Chuck Norris&rsquo; toupee came off an orangutan&rsquo;s ass.</p>
+            <span class="tear" aria-hidden="true"></span>
+            <button
+              class="seal"
+              type="button"
+              role="switch"
+              aria-checked="false"
+              title="Mark as favorite"
+            >
+              <svg class="star" viewBox="0 0 24 24" aria-hidden="true">
+                <use href="#star"></use>
+              </svg>
+            </button>
+          </li>
+          <li class="poster">
+            <p class="joke">
+              Anthrax is reverse-engineered from Chuck Norris&rsquo; white blood cells and was
+              originally called Chuckthrax.
+            </p>
+            <span class="tear" aria-hidden="true"></span>
+            <button
+              class="seal"
+              type="button"
+              role="switch"
+              aria-checked="false"
+              title="Mark as favorite"
+            >
+              <svg class="star" viewBox="0 0 24 24" aria-hidden="true">
+                <use href="#star"></use>
+              </svg>
+            </button>
+          </li>
+          <li class="poster">
+            <p class="joke">
+              If Her Royal Highness Queen Elizabeth of England were to marry Chuck Norris, her
+              official Royal title would be elevated to that of &ldquo;Liz Norris, Chuck&rsquo;s
+              Bitchy Royal Slut of a Wife&rdquo;.
+            </p>
+            <span class="tear" aria-hidden="true"></span>
+            <button
+              class="seal"
+              type="button"
+              role="switch"
+              aria-checked="false"
+              title="Mark as favorite"
+            >
+              <svg class="star" viewBox="0 0 24 24" aria-hidden="true">
+                <use href="#star"></use>
+              </svg>
+            </button>
+          </li>
+        </ol>
+
+        <footer class="foot">
+          An assignment by <a href="https://bfanger.nl">Bob Fanger</a> for
+          <a href="https://frontvalue.nl">FrontValue</a>. Jokes are provided by
+          <a href="https://chucknorris.io">chucknorris.io</a>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>
