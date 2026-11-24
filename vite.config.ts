@@ -5,6 +5,7 @@ import { nitro } from "nitro/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
+import { wgslVitePlugin } from "@vgpu/wgsl/loader-vite";
 
 const inDocker = existsSync("/.dockerenv"),
   config = defineConfig({
@@ -30,6 +31,7 @@ const inDocker = existsSync("/.dockerenv"),
       ...(process.env.VITEST ? [] : [nitro(), tanstackStart()]),
       tailwindcss(),
       viteReact(),
+      wgslVitePlugin(),
     ]),
     resolve: { tsconfigPaths: true },
     server: inDocker
